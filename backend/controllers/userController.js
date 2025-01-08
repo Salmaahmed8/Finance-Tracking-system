@@ -144,8 +144,8 @@ const getUser = asyncHandler(async (req,res) => {
 const updateUser = asyncHandler(async (req,res) => {
     const user = await User.findById(req.user._id);
 
-    if(uder) {
-        user.name = req.bodey.name || user.name;
+    if(user) {
+        user.name = req.body.name || user.name;
         user.photo = req.body.photo || user.photo;
 
         const updateUser = await user.save();
