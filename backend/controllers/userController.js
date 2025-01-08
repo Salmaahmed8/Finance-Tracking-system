@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const User = require("../models/auth/userModel");
 const generateToken = require('../helpers/generateToken');
 const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
 
 const registerUser = asyncHandler(async (req,res) => {
     const {name, email, password}= req.body;
@@ -119,11 +120,26 @@ const loginUser = asyncHandler(async (req,res) => {
 
 //logout user
 const logoutUser = asyncHandler(async (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        path: "/",
+    });
 
     res.status(200).json({message: "User logged out"});
 });
 
+//Get User
+const getUser = asyncHandler(async (req,res) => {
+    const user = await User.findById(req.user._id).select("-password");
+
+    if(user){
+        res.status(200).json(user);
+    } else{
+        res.status(404).json({message:"User not found!"});
+    }
+});
 
 
 module.exports = { registerUser, loginUser, logoutUser} ;
