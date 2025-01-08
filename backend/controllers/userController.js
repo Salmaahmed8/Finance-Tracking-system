@@ -141,5 +141,59 @@ const getUser = asyncHandler(async (req,res) => {
     }
 });
 
+//update User
+const updateUser = asyncHandler(async (req,res) => {
+    const user = await User.findById(req.user._id);
 
-module.exports = { registerUser, loginUser, logoutUser} ;
+    if(uder) {
+        user.name = req.bodey.name || user.name;
+        user.photo = req.body.photo || user.photo;
+
+        const updateUser = await user.save();
+
+        res.status(200).json({
+            _id: updateUser._id,
+            name: updateUser.name,
+            email: updateUser.email,
+            photo: updateUser.photo,
+        });
+    } else {
+        res.statue(404)
+        .json({messahe:"User not found!"});
+    }
+});
+
+//change password
+const changePassword = asyncHandler(async (req,res) => {
+    const { currentPassword, newPassword } = req.body;
+
+    if(!currentPassword || !newPassword ) {
+        return res.status(400)
+        .json({message:"All fielda are required!"});
+    }
+    const user = await User.findById(req.user._id);
+
+    //compare current pass with the hashed pass in database
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if(!isMatch) {
+        return res.status(400)
+        .json({message: "Invalid password!"});
+    }
+
+    //update pass
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({message:"Password changed Successfully!"});
+});
+
+
+module.exports = {
+    registerUser,
+    loginUser, 
+    logoutUser,
+    getUser,
+    updateUser,
+    changePassword,
+};
