@@ -140,7 +140,6 @@ const getUser = asyncHandler(async (req,res) => {
         res.status(404).json({message:"User not found!"});
     }
 });
-
 //update User
 const updateUser = asyncHandler(async (req,res) => {
     const user = await User.findById(req.user._id);

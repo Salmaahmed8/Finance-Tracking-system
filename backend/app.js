@@ -3,9 +3,12 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const connect = require('./db/connect');
 const fs = require('fs');
-const app = express()
+const errorHandler = require('./middleware/errorhandler');
+const userRoutes = require('./routes/userRoutes');
+
 
 require ('dotenv').config()
+const app = express()
 
 const PORT = process.env.PORT || 5000;
 
@@ -17,6 +20,7 @@ app.use(cors({
     credentials: true,
 }));
 app.use(cookieParser());
+app.use(errorHandler);
 
 //Routes
 const routeFiles = fs.readdirSync("./routes");
@@ -32,9 +36,6 @@ routeFiles.forEach((file) => {
 })
 
 
-app.get('/', (req, res) => {
-    res.send('Hello World');
-})
 const server = async () => {
     try {
         await connect();
@@ -45,6 +46,6 @@ const server = async () => {
         console.log("Failed to connect to server due to", error.message);
         process.exit(1);
     }
-}
+};
 
 server();
