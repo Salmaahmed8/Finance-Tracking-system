@@ -5,6 +5,7 @@ const connect = require('./db/connect');
 const fs = require('fs');
 const errorHandler = require('./middleware/errorhandler');
 const userRoutes = require('./routes/userRoutes');
+const transactions = require('./routes/transactions.js');
 
 
 require ('dotenv').config()
